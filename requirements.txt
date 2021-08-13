@@ -1,0 +1,5 @@
+aiogram
+django
+psycopg2
+APScheduler
+environs
