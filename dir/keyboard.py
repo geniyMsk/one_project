@@ -1,8 +1,11 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-progress = InlineKeyboardMarkup(
-    inline_keyboard=[
+progress = ReplyKeyboardMarkup(
+    keyboard=[
         [
-           InlineKeyboardButton(text='Ввести достижение', callback_data='progress')
+           KeyboardButton(text='Ввести достижение')
+        ],
+        [
+           KeyboardButton(text='Выгрузить свои достижения')
         ]
-    ])
+    ], resize_keyboard=True)
