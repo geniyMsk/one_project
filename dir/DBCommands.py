@@ -149,3 +149,18 @@ def count_progress(chat_id):
         if x[0].date() == datetime.date.today():
             a.append(x[0].date())
     return len(a)
+
+
+def get_progress(chat_id):
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute(f"""SELECT * FROM progress WHERE chat_id = {chat_id}""")
+    result = cursor.fetchall()
+    connect.commit()
+    connect.close()
+    return result
