@@ -1,16 +1,25 @@
+import logging
 from aiogram import executor
-
-
 from utils import on_startup_notify
 from loader import dp, scheduler
 import handlers
 
-#def schedule_jobs():
-#    scheduler.add_job(mailing, "cron", day_of_week='mon-sat', hour=9)
-#    scheduler.add_job(mailing, "interval", minutes = 1)
+
 async def on_startup(dispatcher):
     await on_startup_notify(dispatcher)
     #schedule_jobs()
+
+
+log_file = 'logs.log'
+f = open(log_file, 'a')
+f.write('-------------------------\n')
+f.close()
+
+file_log = logging.FileHandler(log_file)
+console_out = logging.StreamHandler()
+logging.basicConfig(handlers=(file_log, console_out),
+                    format=u'%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s',
+                    level=logging.INFO)
 
 
 

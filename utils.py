@@ -1,7 +1,7 @@
 import logging
 import datetime
 from aiogram import Dispatcher
-from aiogram.types import ParseMode
+from aiogram.types import ParseMode, BotCommand, BotCommandScope, BotCommandScopeChat
 
 from config import ADMINS
 from loader import scheduler, bot
@@ -13,7 +13,7 @@ import dir.keyboard as kb
 async def on_startup_notify(dp: Dispatcher):
     for admin in ADMINS:
         try:
-            #await dp.bot.send_message(admin, "Бот Запущен")
+            await dp.bot.send_message(admin, "Бот Запущен")
             pass
         except Exception as err:
             logging.exception(err)
@@ -25,8 +25,7 @@ async def on_startup_notify(dp: Dispatcher):
         hour = job.time.hour
         minute = job.time.minute
         scheduler.add_job(notify, "cron", hour = hour, minute = minute)
+    await bot.set_my_commands(commands=[BotCommand(command='logging', description='Выгрузка логирования')],
+                              scope=BotCommandScopeChat(chat_id=admin))
 
-logging.basicConfig(format=u'%(filename)s [LINE:%(lineno)d] #%(levelname)-8s [%(asctime)s]  %(message)s',
-                    level=logging.INFO,
-                    # level=logging.DEBUG,  # Можно заменить на другой уровень логгирования.
-                    )
+
