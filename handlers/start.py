@@ -91,7 +91,7 @@ async def send_progress(message: Message):
 
         f = open(file_name, 'a')
         for x in progress:
-            f.write(x.text + '\n')
+            f.write(f'Дата: {x.dt.date()}    Достижение: ' + x.text + '\n')
         f.close()
         await message.answer_document(open(file_name, 'rb'), caption='Список ваших достижений')
     except:
