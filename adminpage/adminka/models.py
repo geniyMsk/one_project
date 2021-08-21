@@ -56,6 +56,10 @@ class jobs(models.Model):
     time = models.TimeField(
         verbose_name='Время отправки'
     )
+    job_id = models.TextField(
+        verbose_name='ID отправки',
+        null=True
+    )
     class Meta():
         verbose_name = 'отправка по таймеру'
         verbose_name_plural = 'отправки по таймеру'
@@ -78,3 +82,12 @@ class progress(models.Model):
         db_table = 'progress'
 
 
+class thank_phrases(models.Model):
+    phrase = models.TextField(
+        verbose_name='Фраза'
+    )
+
+    class Meta():
+        verbose_name = 'фраза поблагодарить'
+        verbose_name_plural = 'фразы поблагодарить'
+        db_table = 'thank_phrases'
