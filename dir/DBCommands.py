@@ -74,6 +74,8 @@ def get_random_motivating_phrase():
     cursor = connect.cursor()
     cursor.execute("""SELECT phrase FROM motivating_phrases""")
     phrases = cursor.fetchall()
+    connect.commit()
+    connect.close()
     return random.choice(phrases)[0]
 
 
@@ -87,10 +89,27 @@ def get_random_notify_phrase():
     cursor = connect.cursor()
     cursor.execute("""SELECT phrase FROM notify_phrases""")
     phrases = cursor.fetchall()
+    connect.commit()
+    connect.close()
     return random.choice(phrases)[0]
 
 
-def add_job(chat_id, time):
+def get_random_thank_phrase():
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor()
+    cursor.execute("""SELECT phrase FROM thank_phrases""")
+    phrases = cursor.fetchall()
+    connect.commit()
+    connect.close()
+    return random.choice(phrases)[0]
+
+
+def add_job(chat_id, time, job_id):
     connect = psycopg2.connect(user=config.DB_USER,
                                   password=config.DB_PASS,
                                   host=config.DB_HOST,
@@ -98,8 +117,8 @@ def add_job(chat_id, time):
                                   database=config.DB_NAME)
     connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     cursor = connect.cursor()
-    cursor.execute(f"""INSERT INTO jobs (chat_id, time) VALUES
-                                        ({chat_id}, '{time}')""")
+    cursor.execute(f"""INSERT INTO jobs (chat_id, time, job_id) VALUES
+                                        ({chat_id}, '{time}', '{job_id}')""")
     connect.commit()
     connect.close()
 
@@ -164,3 +183,89 @@ def get_progress(chat_id):
     connect.commit()
     connect.close()
     return result
+
+
+def get_all_users():
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute("""SELECT * FROM users""")
+    result = cursor.fetchall()
+    connect.commit()
+    connect.close()
+    return result
+
+
+def get_all_progress():
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute("""SELECT * FROM progress""")
+    result = cursor.fetchall()
+    connect.commit()
+    connect.close()
+    return result
+
+
+def count_args_users(arg):
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute(f"""SELECT COUNT(*) FROM users WHERE args = '{arg}'""")
+    result = cursor.fetchone()[0]
+    connect.commit()
+    connect.close()
+    return result
+
+
+def get_job(chat_id):
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute(f"""SELECT * FROM jobs WHERE chat_id = '{chat_id}'""")
+    result = cursor.fetchone()
+    connect.commit()
+    connect.close()
+    return result
+
+
+def set_job_id(id, job_id):
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute(f"""UPDATE jobs SET job_id = '{job_id}' WHERE id = {id}""")
+    connect.commit()
+    connect.close()
+
+
+def delete_job_id(id):
+    connect = psycopg2.connect(user=config.DB_USER,
+                               password=config.DB_PASS,
+                               host=config.DB_HOST,
+                               port=config.DB_PORT,
+                               database=config.DB_NAME)
+    connect.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    cursor = connect.cursor(cursor_factory=NamedTupleCursor)
+    cursor.execute(f"""DELETE FROM jobs WHERE id = {id}""")
+    connect.commit()
+    connect.close()
