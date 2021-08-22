@@ -25,7 +25,7 @@ async def on_startup(dispatcher):
             phrase = db.get_random_notify_phrase()
             try:
                 await bot.send_message(job.chat_id, phrase, reply_markup=kb.progress, parse_mode=ParseMode.HTML)
-            except aiogram.utils.exception.BotBlocked:
+            except aiogram.utils.exceptions.BotBlocked:
                 pass
             except Exception as error:
                 logging.error(error)
